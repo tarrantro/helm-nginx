@@ -51,8 +51,8 @@ commonAnnotations: {}
 ##
 image:
   registry: docker.io
-  repository: bitnami/nginx
-  tag: 1.21.6-debian-10-r30
+  repository: tarrantro/nginx
+  tag: 1.19.3-debian-10-r28
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: https://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -113,9 +113,7 @@ podLabels: {}
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
 ##
 podAnnotations: 
-    dapr.io/sidecar-listen-addresses: "[::],0.0.0.0"
     dapr.io/app-id: nginx-dapr
-    dapr.io/config: nprdconfig
     dapr.io/log-as-json: "true"
     dapr.io/app-port: "8080"
     dapr.io/enabled: "true"
@@ -407,6 +405,9 @@ cloneStaticSiteFromGit:
   ##     mountPath: /root/.ssh/
   ##
   extraVolumeMounts: []
+## @param customizedConfig Custom nginx.conf in configmap
+## NOTE: This will generate a new nginx.conf from configmap.yaml and mount to /opt/bitnami/nginx/conf/nginx.conf
+customizedConfig: true
 ## @param serverBlock Custom server block to be added to NGINX configuration
 ## PHP-FPM example server block:
 ## serverBlock: |-
@@ -423,7 +424,10 @@ cloneStaticSiteFromGit:
 ##     }
 ##   }
 ##
-serverBlock: ""
+serverBlock: |-
+  server {
+    
+  }
 ## @param existingServerBlockConfigmap ConfigMap with custom server block to be added to NGINX configuration
 ## NOTE: This will override serverBlock
 ##

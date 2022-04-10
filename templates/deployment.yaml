@@ -197,6 +197,11 @@ spec:
           resources: {{- toYaml .Values.resources | nindent 12 }}
           {{- end }}
           volumeMounts:
+            {{- if .Values.customizedConfig }}
+            - name: nginx-config
+              mountPath: /opt/bitnami/nginx/conf/nginx.conf
+              subPath: nginx.conf
+            {{- end }}
             {{- if or .Values.serverBlock .Values.existingServerBlockConfigmap .Values.ldapDaemon.enabled }}
             - name: nginx-server-block-paths
               mountPath: /opt/bitnami/nginx/conf/server_blocks
@@ -298,6 +303,11 @@ spec:
         {{- include "common.tplvalues.render" ( dict "value" . "context" $ ) | nindent 8 }}
         {{- end }}
       volumes:
+        {{- if .Values.customizedConfig }}
+        - name: nginx-config
+          configMap:
+            name: {{ include "common.names.fullname" . }}-nginx-config
+        {{- end }}
         - name: nginx-server-block-paths
           configMap:
             name: {{ template "common.names.fullname" . }}-server-block
