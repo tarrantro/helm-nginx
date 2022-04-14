@@ -19,8 +19,8 @@ data:
 
     events {
         multi_accept        on;
-	    worker_connections  16384;
-	    use                 epoll;
+        worker_connections  16384;
+        use                 epoll;
     }
 
     http {
@@ -50,8 +50,6 @@ data:
         scgi_temp_path         "/opt/bitnami/nginx/tmp/scgi" 1 2;
         uwsgi_temp_path        "/opt/bitnami/nginx/tmp/uwsgi" 1 2;
 
-        perl_modules perl/lib;
-
         aio                 threads;
         aio_write           on;
         
@@ -71,7 +69,7 @@ data:
         keepalive_timeout  65;
 
         # turn on session caching to drastically improve performance
-	
+
         ssl_session_cache shared:SSL:10m;
         ssl_session_timeout 10m;
         
@@ -82,7 +80,7 @@ data:
         ssl_buffer_size 4k;
         ssl_protocols      TLSv1.2 TLSv1.3;
         ssl_ciphers 'ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384';
-	    ssl_prefer_server_ciphers on;
+        ssl_prefer_server_ciphers on;
 
         ssl_certificate     /opt/bitnami/nginx/ssl/default-fake-certificate.pem;
         ssl_certificate_key /opt/bitnami/nginx/ssl/default-fake-certificate.pem;
@@ -100,7 +98,7 @@ data:
         http2_max_concurrent_streams    128;
 
         proxy_headers_hash_max_size     512;
-	    proxy_headers_hash_bucket_size  64;
+        proxy_headers_hash_bucket_size  64;
 
         variables_hash_bucket_size      256;
         variables_hash_max_size         2048;
@@ -114,11 +112,9 @@ data:
         server_tokens off;
 
         log_format upstreaminfo '$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent" $request_length $request_time [$proxy_upstream_name] [$proxy_alternative_upstream_name] $upstream_addr $upstream_response_length $upstream_response_time $upstream_status $req_id';
-	
         access_log /opt/bitnami/nginx/logs/access.log upstreaminfo  if=$loggable;
-	
-	    error_log  /opt/bitnami/nginx/logs/error.log notice;
-        
+        error_log  /opt/bitnami/nginx/logs/error.log notice;
+
         map $request_uri $loggable {
             
             default 1;
@@ -142,8 +138,16 @@ data:
             
         }
 
+        map $http_pru_tenant $lbu {
+            default "strapi-system-api";
+
+            mo      "strapi-system-api";
+            hk      "strapi-system-api-hk";
+
+        }
+        
         server_name_in_redirect off;
-	    port_in_redirect        off;
+        port_in_redirect        off;
 
         include  "/opt/bitnami/nginx/conf/server_blocks/*.conf";
 
@@ -180,4 +184,5 @@ data:
                 }
             }
         }
+    }
 {{- end }}
