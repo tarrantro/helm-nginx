@@ -438,7 +438,7 @@ serverBlock: |-
     }
 
     ## strapi header base route
-    location ~* "^/dev/strapi-system-api/(.+?)/(.*$)" {
+    location ~* "^/dev/strapi-system-api/(.*$)" {
       port_in_redirect off;
         set $service_port   "3500";
         
