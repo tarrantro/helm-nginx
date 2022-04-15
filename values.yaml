@@ -439,7 +439,7 @@ serverBlock: |-
     }
 
     ## strapi header base route
-    location ~* "^/dev/strapi-system-api/(.*$)" {
+    location ~* "^/(dev|sit|uat)/strapi-system-api/(.*$)" {
       port_in_redirect off;
         set $service_port   "3500";
         
@@ -496,14 +496,14 @@ serverBlock: |-
         proxy_next_upstream_timeout             0;
         proxy_next_upstream_tries               3;
 
-        rewrite "(?i)/(\w+?)/(.+?)/(.*$)" /v1.0/invoke/$lbu.hkprho-dev-az1-neo/method/$3 break;
+        rewrite "(?i)/(\w+?)/(.+?)/(.*$)" /v1.0/invoke/$lbu.hkprho-$1-az1-neo/method/$3 break;
         
         proxy_pass http://127.0.0.1:3500;
         
         proxy_redirect                          off;
     }
     
-    location ~* "^/dev/(.+?)/(.*$)" {
+    location ~* "^/(dev|sit|uat)/(.+?)/(.*$)" {
         
         port_in_redirect off;
         set $service_port   "3500";
@@ -561,136 +561,7 @@ serverBlock: |-
         proxy_next_upstream_timeout             0;
         proxy_next_upstream_tries               3;
         
-        rewrite "(?i)/(\w+?)/(.+?)/(.*$)" /v1.0/invoke/$2.hkprho-dev-az1-neo/method/$3 break;
-        proxy_pass http://127.0.0.1:3500;
-        
-        proxy_redirect                          off;
-    }
-
-    ## strapi header base route
-    location ~* "^/sit/strapi-system-api/(.*$)" {
-      port_in_redirect off;
-        set $service_port   "3500";
-        
-        client_max_body_size                    1m;
-        
-        proxy_set_header Host                   $host;
-        
-        # Pass the extracted client certificate to the backend
-        
-        # Allow websocket connections
-        proxy_pass_header                       Upgrade;
-        
-        proxy_pass_header                       Connection;
-        
-        proxy_pass_header                       X-Request-ID;
-        proxy_pass_header                       X-Real-IP;
-        
-        proxy_set_header X-Forwarded-For        $proxy_add_x_forwarded_for;
-        
-        proxy_pass_header                       X-Forwarded-Host;
-        proxy_set_header X-Forwarded-Port       $service_port;
-        proxy_set_header X-Forwarded-Proto      $scheme;
-        proxy_set_header X-Forwarded-Scheme     $scheme;
-        
-        proxy_set_header X-Scheme               $scheme;
-        
-        # Pass the original X-Forwarded-For
-        proxy_set_header X-Original-Forwarded-For $http_x_forwarded_for;
-        
-        # mitigate HTTPoxy Vulnerability
-        # https://www.nginx.com/blog/mitigating-the-httpoxy-vulnerability-with-nginx/
-        proxy_set_header Proxy                  "";
-        
-        # Custom headers to proxied server
-        
-        proxy_connect_timeout                   5s;
-        proxy_send_timeout                      60s;
-        proxy_read_timeout                      60s;
-        
-        proxy_buffering                         off;
-        proxy_buffer_size                       4k;
-        proxy_buffers                           4 4k;
-        
-        proxy_max_temp_file_size                1024m;
-        
-        proxy_request_buffering                 on;
-        proxy_http_version                      1.1;
-        
-        proxy_cookie_domain                     off;
-        proxy_cookie_path                       off;
-        
-        # In case of errors try the next upstream server before returning an error
-        proxy_next_upstream                     error timeout;
-        proxy_next_upstream_timeout             0;
-        proxy_next_upstream_tries               3;
-
-        rewrite "(?i)/(\w+?)/(.+?)/(.*$)" /v1.0/invoke/$lbu.hkprho-sit-az1-neo/method/$3 break;
-        
-        proxy_pass http://127.0.0.1:3500;
-        
-        proxy_redirect                          off;
-    }
-    
-    location ~* "^/sit/(.+?)/(.*$)" {
-        
-        port_in_redirect off;
-        set $service_port   "3500";
-        
-        client_max_body_size                    1m;
-        
-        proxy_set_header Host                   $host;
-        
-        # Pass the extracted client certificate to the backend
-        
-        # Allow websocket connections
-        proxy_pass_header                       Upgrade;
-        
-        proxy_pass_header                       Connection;
-        
-        proxy_pass_header                       X-Request-ID;
-        proxy_pass_header                       X-Real-IP;
-        
-        proxy_set_header X-Forwarded-For        $proxy_add_x_forwarded_for;
-        
-        proxy_pass_header                       X-Forwarded-Host;
-        proxy_set_header X-Forwarded-Port       $service_port;
-        proxy_set_header X-Forwarded-Proto      $scheme;
-        proxy_set_header X-Forwarded-Scheme     $scheme;
-        
-        proxy_set_header X-Scheme               $scheme;
-        
-        # Pass the original X-Forwarded-For
-        proxy_set_header X-Original-Forwarded-For $http_x_forwarded_for;
-        
-        # mitigate HTTPoxy Vulnerability
-        # https://www.nginx.com/blog/mitigating-the-httpoxy-vulnerability-with-nginx/
-        proxy_set_header Proxy                  "";
-        
-        # Custom headers to proxied server
-        
-        proxy_connect_timeout                   5s;
-        proxy_send_timeout                      60s;
-        proxy_read_timeout                      60s;
-        
-        proxy_buffering                         off;
-        proxy_buffer_size                       4k;
-        proxy_buffers                           4 4k;
-        
-        proxy_max_temp_file_size                1024m;
-        
-        proxy_request_buffering                 on;
-        proxy_http_version                      1.1;
-        
-        proxy_cookie_domain                     off;
-        proxy_cookie_path                       off;
-        
-        # In case of errors try the next upstream server before returning an error
-        proxy_next_upstream                     error timeout;
-        proxy_next_upstream_timeout             0;
-        proxy_next_upstream_tries               3;
-        
-        rewrite "(?i)/(\w+?)/(.+?)/(.*$)" /v1.0/invoke/$2.hkprho-sit-az1-neo/method/$3 break;
+        rewrite "(?i)/(\w+?)/(.+?)/(.*$)" /v1.0/invoke/$2.hkprho-$1-az1-neo/method/$3 break;
         proxy_pass http://127.0.0.1:3500;
         
         proxy_redirect                          off;
