@@ -4,18 +4,33 @@
 
 NGINX Open Source is a web server that can be also used as a reverse proxy, load balancer, and HTTP cache. Recommended for high-demanding sites due to its ability to provide faster content. 
 
+We made some customization on original bitnami chart.
+
 [Overview of NGINX Open Source](http://nginx.org)
 
 Trademarks: This software listing is packaged by Bitnami. The respective trademarks mentioned in the offering are owned by the respective companies, and use of them does not imply any affiliation or endorsement.
-                           
-## TL;DR
+    
+## Build Nginx Image
+
+repo: ssh://git@code.pruconnect.net:7999/pcaneo/devops-customized-configuration.git
 
 ```bash
-$ helm repo add bitnami https://charts.bitnami.com/bitnami
-$ helm install my-release bitnami/nginx
+    git clone ssh://git@code.pruconnect.net:7999/pcaneo/devops-customized-configuration.git
+    cd nginx
+    docker build . -t docker-pca-neo.registry.pruconnect.net/nginx:1.19.3-debian-10-r28
+    docker push docker-pca-neo.registry.pruconnect.net/nginx:1.19.3-debian-10-r28
+```
+                       
+## Deployment
+
+```bash
+    tar -czvf ./1.tgz ./
+    helm install nginx -n {namespace} ./1.tgz
 ```
 
 ## Introduction
+
+We use Bitname charts as our base helm chart and also utilize the base image as well. But we custiomized a little on the chart as well as the base image. I added lua module onto the base image for furture usage as well as customized nginx.conf.
 
 Bitnami charts for Helm are carefully engineered, actively maintained and are the quickest and easiest way to deploy containers on a Kubernetes cluster that are ready to handle production workloads.
 
